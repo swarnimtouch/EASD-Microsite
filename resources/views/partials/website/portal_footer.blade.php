@@ -1,0 +1,1 @@
+<footer class="mt-auto border-t border-slate-200 bg-white px-6 py-5 text-center text-[10px] font-bold uppercase tracking-widest text-slate-400">© {{ date('Y') }} Hetero Healthcare Limited · EASD Diabetes Series</footer>
