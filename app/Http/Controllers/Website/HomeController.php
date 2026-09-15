@@ -59,17 +59,30 @@ class HomeController extends MyController
             ->whereNotNull('scheduled_at')
             ->where('scheduled_at', '>=', $currentTime)
             ->orderBy('scheduled_at')
-            ->take(3)
             ->get();
 
+        $doctor = Auth::guard('web')->user();
+
+        $userUpcoming = $doctor?->country
+            ? $upcomingWebinars->first(fn ($w) => strcasecmp($w->country, $doctor->country) === 0)
+            : null;
+        $anyUpcoming = $upcomingWebinars->first();
+        $userWebinar = $doctor?->country
+            ? Webinar::with($webinarRelations)->where('status', 'active')->where('country', $doctor->country)->latest('scheduled_at')->first()
+            : null;
+        $philippinesWebinar = Webinar::with($webinarRelations)->where('status', 'active')->where('country', 'Philippines')->latest('scheduled_at')->first();
+
         $featuredWebinar = $liveWebinar
-            ?: $upcomingWebinars->first()
+            ?: $userUpcoming
+            ?: $anyUpcoming
+            ?: $userWebinar
+            ?: $philippinesWebinar
             ?: Webinar::with($webinarRelations)->where('status', 'active')->latest('scheduled_at')->first();
 
         return view('website.home', [
             'featuredWebinar' => $featuredWebinar,
             'isFeaturedLive' => $liveWebinar?->is($featuredWebinar) ?? false,
-            'upcomingWebinars' => $upcomingWebinars,
+            'upcomingWebinars' => $upcomingWebinars->take(3),
             'agendaCountries' => $agendaCountries,
             'registeredDoctors' => User::where('type', 'doctor')->where('status', 'active')->count(),
             'facultyList' => WebinarPerson::query()
@@ -84,12 +97,60 @@ class HomeController extends MyController
 
     public function webinar(?int $id = null)
     {
-        $query = Webinar::with(['people', 'speciality', 'comments.user', 'comments.upvotes', 'comments.replies.upvotes'])->where('status', 'active');
-        $webinar = $id
-            ? $query->findOrFail($id)
-            : $query->orderByRaw('scheduled_at IS NULL')->orderBy('scheduled_at')->firstOrFail();
-
+        $doctor = Auth::guard('web')->user();
         $currentTime = now();
+        $hostCountryNames = ['Philippines', 'Malaysia', 'Indonesia', 'Thailand'];
+
+        $query = Webinar::with(['people', 'speciality', 'comments.user', 'comments.upvotes', 'comments.replies.upvotes'])->where('status', 'active');
+
+        $requestedCountry = request('country');
+
+        if ($id) {
+            $webinar = $query->findOrFail($id);
+        } elseif ($requestedCountry) {
+            $webinar = (clone $query)->where('country', $requestedCountry)
+                ->where('scheduled_at', '>=', $currentTime)
+                ->orderBy('scheduled_at')
+                ->first()
+                ?: (clone $query)->where('country', $requestedCountry)->latest('scheduled_at')->first()
+                ?: (clone $query)->where('country', 'Philippines')->firstOrFail();
+        } else {
+            // 1. Logged in user's country upcoming webinar (if any)
+            $userUpcoming = ($doctor && $doctor->country)
+                ? (clone $query)->where('country', $doctor->country)->where('scheduled_at', '>=', $currentTime)->orderBy('scheduled_at')->first()
+                : null;
+
+            // 2. Earliest upcoming webinar across ALL countries
+            $anyUpcoming = (clone $query)->where('scheduled_at', '>=', $currentTime)->orderBy('scheduled_at')->first();
+
+            // 3. Otherwise user's country webinar (recorded/latest)
+            $userCountryWebinar = ($doctor && $doctor->country)
+                ? (clone $query)->where('country', $doctor->country)->latest('scheduled_at')->first()
+                : null;
+
+            // 4. Default: Philippines webinar
+            $philippinesWebinar = (clone $query)->where('country', 'Philippines')->latest('scheduled_at')->first();
+
+            $webinar = $userUpcoming
+                ?: $anyUpcoming
+                ?: $userCountryWebinar
+                ?: $philippinesWebinar
+                ?: (clone $query)->orderByRaw('scheduled_at IS NULL')->orderBy('scheduled_at')->firstOrFail();
+        }
+
+        $tourWebinars = collect($hostCountryNames)->mapWithKeys(function ($countryName) use ($currentTime) {
+            $cWebinar = Webinar::where('status', 'active')
+                ->where('country', $countryName)
+                ->where('scheduled_at', '>=', $currentTime)
+                ->orderBy('scheduled_at')
+                ->first()
+                ?: Webinar::where('status', 'active')
+                    ->where('country', $countryName)
+                    ->latest('scheduled_at')
+                    ->first();
+            return [$countryName => $cWebinar];
+        })->filter();
+
         $isUpcoming = $webinar->scheduled_at?->isAfter($currentTime) ?? false;
         $endsAt = $webinar->scheduled_at?->copy()->addMinutes($webinar->duration_minutes);
         $isLive = $webinar->scheduled_at
@@ -102,14 +163,16 @@ class HomeController extends MyController
 
         return view('website.webinar', [
             'webinar' => $webinar,
-            'doctor' => Auth::guard('web')->user(),
+            'doctor' => $doctor,
+            'tourWebinars' => $tourWebinars,
+            'hostCountryNames' => $hostCountryNames,
             'isUpcoming' => $isUpcoming,
             'isLive' => $isLive,
             'hasEnded' => $hasEnded,
             'canComment' => !$webinar->scheduled_at || $webinar->scheduled_at->lte($currentTime),
             'playbackUrl' => $playbackUrl,
             'youtubeEmbedUrl' => Webinar::youtubeEmbedUrl($playbackUrl),
-            'hasCommented' => $webinar->allComments()->where('user_id', Auth::guard('web')->id())->where('status', 'active')->exists(),
+            'hasCommented' => $doctor ? $webinar->allComments()->where('user_id', $doctor->id)->where('status', 'active')->exists() : false,
         ]);
     }
 

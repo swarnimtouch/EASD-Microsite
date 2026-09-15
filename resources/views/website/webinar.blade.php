@@ -1,79 +1,4 @@
 @extends('layouts.website', ['title' => $webinar->title, 'bodyClass' => 'bg-[#F4F6F8] font-sans antialiased text-slate-800'])
-@if(false)
-    <!DOCTYPE html>
-<html lang="en">
-<head>
-    <script>
-        window.FontAwesomeConfig = {
-            autoReplaceSvg: 'nest'
-        };
-    </script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous"
-            referrerpolicy="no-referrer"></script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $webinar->title }} — PULCE Connect 2026</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-          rel="stylesheet">
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {sans: ['"Plus Jakarta Sans"', 'sans-serif']},
-                    colors: {
-                        escRed: '#BE1E2D',
-                        escBlue: '#1D438A',
-                        escLight: '#F8F9FA'
-                    }
-                }
-            }
-        }
-    </script>
-</head>
-<body class="bg-[#F4F6F8] font-sans antialiased text-slate-800">
-
-<!-- Top Brand Bar -->
-<header
-    class="bg-white border-b border-slate-200 py-3 px-6 shadow-sm flex items-center justify-between sticky top-0 z-50">
-    <div class="flex items-center gap-6">
-        <div class="flex items-center gap-2">
-            <i class="ph-fill ph-heart text-escRed text-xl"></i>
-            <span class="text-lg font-black text-slate-900">EASD</span>
-        </div>
-        <div class="flex items-center gap-3 border-l border-slate-200 pl-6">
-            <div class="text-xl font-black italic tracking-tighter flex items-center">
-                <span class="text-escBlue">P</span>
-                <div
-                    class="w-5 h-5 rounded-full border-2 border-escRed flex items-center justify-center -mx-0.5 bg-white">
-                    <i class="ph-bold ph-pulse text-escRed text-[8px]"></i>
-                </div>
-                <span class="text-escBlue">LCE</span>
-            </div>
-            <span class="text-lg font-black text-escRed">2026</span>
-        </div>
-    </div>
-    <div class="flex items-center gap-4">
-        <div
-            class="flex items-center gap-2 px-3 py-1 rounded-full {{ $isLive ? 'bg-escRed/10 text-escRed animate-pulse' : 'bg-slate-100 text-slate-500' }}">
-            <span class="w-2 h-2 rounded-full {{ $isLive ? 'bg-escRed' : 'bg-slate-400' }}"></span>
-            <span
-                class="text-[10px] font-black uppercase tracking-widest">{{ $isLive ? 'Live Session' : ($isUpcoming ? 'Upcoming Session' : 'Completed Session') }}</span>
-        </div>
-        <div class="h-8 w-px bg-slate-200"></div>
-        <div class="flex items-center gap-2">
-            <img src="{{ $doctor->profile_image }}" class="w-8 h-8 rounded-full border border-slate-200"
-                 alt="{{ $doctor->name }}">
-            <span class="text-xs font-bold text-slate-600">{{ $doctor->name }}</span>
-        </div>
-    </div>
-</header>
-@endif
 @section('content')
 
     <main class="max-w-[1400px] mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -82,6 +7,11 @@
         <div class="{{ $isUpcoming ? 'lg:col-span-8' : 'lg:col-span-12' }} space-y-6">
             <section class="rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm">
                 <div class="flex flex-wrap items-center gap-2">
+                    @if($webinar->country)
+                        <span class="rounded-full bg-red-100/70 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-escRed flex items-center gap-1">
+                            <i class="ph ph-map-pin"></i>{{ $webinar->country }}
+                        </span>
+                    @endif
                     @if($webinar->speciality)
                         <span
                             class="rounded-full bg-escBlue/10 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-escBlue">{{ $webinar->speciality->name }}</span>
@@ -101,7 +31,22 @@
                         <span class="flex items-center gap-2"><i class="ph ph-clock text-lg text-escRed"></i>{{ $webinar->duration_minutes }} minutes</span>
                     @endif
                 </div>
-                <div class="mt-4">@include('partials.website.timezone_switcher')</div>
+                <div class="mt-4 flex flex-wrap items-center gap-3">
+                    @if(isset($tourWebinars) && $tourWebinars->isNotEmpty())
+                        <label class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-[10px] font-bold text-slate-600 shadow-sm">
+                            <i class="ph ph-map-pin text-base text-escRed"></i>
+                            <span class="hidden sm:inline">Country:</span>
+                            <select onchange="window.location.href = this.value" class="bg-transparent text-[10px] font-extrabold text-escBlue outline-none cursor-pointer">
+                                @foreach($tourWebinars as $cName => $cWebinar)
+                                    <option value="{{ route('webinar', $cWebinar->id) }}" @selected($webinar->id === $cWebinar->id || strcasecmp($webinar->country, $cName) === 0)>
+                                        {{ $cName }} @if(strcasecmp($doctor?->country, $cName) === 0)(Your Country)@endif
+                                    </option>
+                                @endforeach
+                            </select>
+                        </label>
+                    @endif
+                    @include('partials.website.timezone_switcher')
+                </div>
             </section>
 
             @if($playbackUrl)

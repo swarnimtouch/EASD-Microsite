@@ -16,12 +16,15 @@
                                 $eventDate = $countryAgenda['webinar']?->scheduled_at;
                             @endphp
                             @if($eventDate)
-                                <time class="min-w-[85px] px-3 text-center sm:min-w-[92px] sm:px-4" data-event-datetime="{{ $eventDate->toIso8601String() }}">
-                                    <strong data-date-part="day" class="block text-3xl font-black text-slate-950">{{ $eventDate->format('d') }}</strong>
-                                    <span class="text-xs font-bold text-slate-700"><span data-date-part="month">{{ $eventDate->format('F') }}</span><br><span data-date-part="year">{{ $eventDate->format('Y') }}</span></span>
+                                <time class="min-w-[72px] px-2 text-center sm:min-w-[88px] sm:px-4" data-event-datetime="{{ $eventDate->toIso8601String() }}">
+                                    <strong data-date-part="day" class="block text-2xl font-black text-slate-950">{{ $eventDate->format('d') }}</strong>
+                                    <span class="text-[10px] font-bold text-slate-700 sm:text-xs"><span data-date-part="month">{{ $eventDate->format('M') }}</span><br><span data-date-part="year">{{ $eventDate->format('Y') }}</span></span>
                                 </time>
                             @else
-                                <div class="min-w-[85px] px-3 text-center sm:min-w-[92px] sm:px-4"><strong class="block text-xl font-black text-slate-950">TBA</strong><span class="text-[10px] font-bold text-slate-600">{{ $countryAgenda['name'] }}<br>Schedule</span></div>
+                                <div class="min-w-[72px] px-2 text-center sm:min-w-[88px] sm:px-4">
+                                    <strong class="block text-xl font-black text-slate-950">TBA</strong>
+                                    <span class="text-[10px] font-bold text-slate-600">Event<br>Date</span>
+                                </div>
                             @endif
                         @endforeach
                     </div>
@@ -31,7 +34,12 @@
                     <h2 class="text-center text-sm font-extrabold uppercase text-escBlue">Global Collaboration</h2>
                     <div class="mx-auto mt-3 h-0.5 w-12 bg-escBlue"></div>
                     <div class="mt-5 grid grid-cols-2 gap-x-3 gap-y-4 sm:grid-cols-4">
-                        @foreach($agendaCountries as $countryAgenda)<div class="text-center"><img src="{{ asset('assets/media/flags/'.$countryAgenda['flag'].'.svg') }}" alt="{{ $countryAgenda['name'] }} flag" class="mx-auto h-6 w-10 rounded-sm border border-slate-200 object-contain shadow-sm"><small class="mt-1 block text-[9px] font-semibold text-slate-700">{{ $countryAgenda['name'] }}</small></div>@endforeach
+                        @foreach($agendaCountries as $countryAgenda)
+                            <div class="text-center">
+                                <img src="{{ asset('assets/media/flags/'.$countryAgenda['flag'].'.svg') }}" alt="{{ $countryAgenda['name'] }} flag" class="mx-auto h-6 w-10 rounded-sm border border-slate-200 object-contain shadow-sm">
+                                <small class="mt-1 block text-[9px] font-semibold text-slate-700">{{ $countryAgenda['name'] }}</small>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -40,12 +48,31 @@
             <div class="mx-auto aspect-[4.05/1] w-full max-w-[620px] overflow-hidden lg:mx-0">
                 <img src="{{ asset('assets/images/branding/pulce-logo.png') }}" alt="PULCE Connect 2026" class="block h-auto w-full object-contain object-top">
             </div>
-            <div class="mx-auto mt-2 max-w-[620px] rounded-sm bg-escRed px-4 py-2 text-center text-sm font-black uppercase tracking-wide text-white lg:mx-0">Cardio-Renal-Metabolic Educational Series</div>
-            <p class="mx-auto mt-2 max-w-[620px] text-center text-sm font-extrabold text-escBlue lg:mx-0">Redefining Diabetes Care Beyond Glycaemic Control</p>
-            <p class="mx-auto mt-3 max-w-2xl text-sm font-black leading-6 text-escBlue lg:mx-0">Live Hybrid Speaker Tour across 4 Host Countries (Malaysia, Philippines, Indonesia, Thailand) <span class="text-escRed">|</span> Broadcasting Live to Emerging Markets</p>
+            <div class="mx-auto mt-3 max-w-[620px] rounded bg-escRed px-4 py-2 text-center text-sm font-black uppercase tracking-wider text-white shadow-sm lg:mx-0">
+                Cardio-Renal-Metabolic (CRM) Educational Series
+            </div>
+            <p class="mx-auto mt-2 max-w-[620px] text-center text-base font-extrabold text-escBlue lg:mx-0">
+                Redefining Diabetes Care Beyond Glycaemic Control
+            </p>
+            <div class="mx-auto mt-3 flex items-center justify-center gap-3 text-slate-700 lg:justify-start" aria-label="Heart, Kidney and Metabolism">
+                <span class="inline-flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50 px-2.5 py-0.5 text-[11px] font-extrabold text-rose-700"><i class="ph-fill ph-heartbeat text-sm text-rose-600"></i>Heart</span>
+                <span class="inline-flex items-center gap-1.5 rounded-full border border-sky-200 bg-sky-50 px-2.5 py-0.5 text-[11px] font-extrabold text-sky-700"><i class="ph-fill ph-drop text-sm text-sky-600"></i>Kidney</span>
+                <span class="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-[11px] font-extrabold text-amber-800"><i class="ph-fill ph-activity text-sm text-amber-600"></i>Metabolism</span>
+            </div>
+            <div class="mx-auto mt-4 max-w-2xl rounded-xl border border-red-100 bg-white/95 p-4 shadow-sm text-center lg:text-left">
+                <p class="text-[10px] font-black uppercase tracking-widest text-escRed">Event Architecture</p>
+                <p class="mt-1 text-sm font-black leading-6 text-escBlue">
+                    Live Hybrid Speaker Tour across 4 Host Countries (Malaysia, Philippines, Indonesia, Thailand) <span class="text-escRed">|</span> Broadcasting Live to Emerging Markets
+                </p>
+            </div>
             @guest('web')
-                <div class="mt-7 flex flex-wrap items-center justify-center gap-4 lg:justify-start"><a href="{{ route('register') }}" class="rounded-md bg-escRed px-8 py-3 text-sm font-extrabold text-white shadow-lg hover:bg-red-700">REGISTER NOW</a><a href="{{ route('login') }}" class="text-xs font-extrabold text-escBlue underline underline-offset-4">Already registered? Login</a></div>
-                <p class="mt-3 text-center text-xs font-bold text-slate-500 lg:text-left"><i class="ph ph-users-three mr-1 text-escBlue"></i>{{ number_format($registeredDoctors) }} healthcare professional{{ $registeredDoctors === 1 ? '' : 's' }} registered</p>
+                <div class="mt-7 flex flex-wrap items-center justify-center gap-4 lg:justify-start">
+                    <a href="{{ route('register') }}" class="rounded-md bg-escRed px-8 py-3 text-sm font-extrabold text-white shadow-lg hover:bg-red-700 transition">REGISTER NOW</a>
+                    <a href="{{ route('login') }}" class="text-xs font-extrabold text-escBlue underline underline-offset-4">Already registered? Login</a>
+                </div>
+                <p class="mt-3 text-center text-xs font-bold text-slate-500 lg:text-left">
+                    <i class="ph ph-users-three mr-1 text-escBlue"></i>{{ number_format($registeredDoctors) }} healthcare professional{{ $registeredDoctors === 1 ? '' : 's' }} registered
+                </p>
             @endguest
         </div>
     </div>

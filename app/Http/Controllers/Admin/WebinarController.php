@@ -93,10 +93,17 @@ class WebinarController
             if ($webinar->speciality_id) $query->orWhere('id', $webinar->speciality_id);
         })->orderBy('name')->get();
 
-        $countries = Country::where(function ($query) use ($webinar) {
-            $query->where('flag', 1);
-            if ($webinar->country) $query->orWhere('name', $webinar->country);
-        })->orderBy('name')->get();
+        $hostCountries = ['Malaysia', 'Philippines', 'Indonesia', 'Thailand'];
+        $countries = Country::whereIn('name', $hostCountries)
+            ->when($webinar->country && !in_array($webinar->country, $hostCountries, true), function ($query) use ($webinar) {
+                $query->orWhere('name', $webinar->country);
+            })
+            ->get()
+            ->sortBy(function ($country) use ($hostCountries) {
+                $idx = array_search($country->name, $hostCountries, true);
+                return $idx !== false ? $idx : 999;
+            })
+            ->values();
 
         return view('admin.webinars.add_edit', [
             'webinar' => $webinar,
@@ -117,11 +124,18 @@ class WebinarController
             'speciality_id' => $request->filled('speciality_id') ? (int) $request->input('speciality_id') : null,
         ]);
 
+        $hostCountries = ['Malaysia', 'Philippines', 'Indonesia', 'Thailand'];
+        $webinar = $id ? Webinar::find($id) : null;
+        $allowedCountries = ($webinar && $webinar->country && !in_array($webinar->country, $hostCountries, true))
+            ? array_merge($hostCountries, [$webinar->country])
+            : $hostCountries;
+
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'country' => [
                 'required',
-                Rule::exists('countries', 'name')->where(fn ($query) => $query->where('flag', 1)),
+                'string',
+                Rule::in($allowedCountries),
             ],
             'speciality_id' => ['required', 'integer', 'exists:specialities,id'],
             'type' => ['required', 'string', 'max:100'],
@@ -154,7 +168,7 @@ class WebinarController
             'faculty.*.remove_image' => ['nullable', 'boolean'],
         ], [
             'country.required' => 'Please select a country for this webinar.',
-            'country.exists' => 'The selected country is not active in the Country master.',
+            'country.in' => 'The selected country must be one of the 4 host countries: Malaysia, Philippines, Indonesia, or Thailand.',
             'speciality_id.required' => 'Please select a speciality for this webinar.',
             'speciality_id.exists' => 'The selected speciality is no longer available.',
         ]);

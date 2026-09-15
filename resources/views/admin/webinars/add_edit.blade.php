@@ -57,6 +57,7 @@
                                     <option value="{{ $country->name }}" @selected(old('country', $webinar->country) === $country->name)>{{ $country->name }}</option>
                                 @endforeach
                             </select>
+                            <p class="mt-1 text-xs text-slate-500">Host tour country: Malaysia, Philippines, Indonesia, or Thailand.</p>
                             @if($countries->isEmpty())<p class="mt-2 text-xs font-semibold text-amber-600">No active countries are available. <a href="{{ route('admin.countries.add_edit_form') }}" class="underline">Create a country first</a>.</p>@endif
                         </div>
                         <div class="fv-row">

@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
         'Asia/Kolkata': 'GMT+5:30 IST',
         'Asia/Dubai': 'GMT+4 GST',
     };
-    const valueFor = (date, timezone, options) => new Intl.DateTimeFormat('en-GB', {timeZone: timezone, ...options}).format(date);
+    const valueFor = (date, timezone, options) => new Intl.DateTimeFormat('en-US', {timeZone: timezone, ...options}).format(date);
     const renderTimes = timezone => {
         document.querySelectorAll('[data-event-datetime]').forEach(element => {
             const date = new Date(element.dataset.eventDatetime);
@@ -76,11 +76,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 const type = part.dataset.datePart;
                 const formats = {
                     day: {day: '2-digit'},
-                    month: {month: 'long'},
+                    month: {month: 'short'},
+                    monthFull: {month: 'long'},
                     year: {year: 'numeric'},
-                    date: {day: '2-digit', month: 'long', year: 'numeric'},
-                    datetime: {day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'},
-                    time: {hour: '2-digit', minute: '2-digit'},
+                    date: {day: '2-digit', month: 'short', year: 'numeric'},
+                    datetime: {day: '2-digit', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true},
+                    time: {hour: 'numeric', minute: '2-digit', hour12: true},
                 };
                 part.textContent = valueFor(date, timezone, formats[type] || formats.datetime);
             });

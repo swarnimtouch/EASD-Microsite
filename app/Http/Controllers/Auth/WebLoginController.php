@@ -49,10 +49,24 @@ class WebLoginController
             $webinar->scheduled_at->lte($currentTime)
             && $webinar->scheduled_at->copy()->addMinutes($webinar->duration_minutes)->gt($currentTime)
         );
-        $upcomingWebinars = $webinars->filter(fn (Webinar $webinar) => $webinar->scheduled_at->gte($currentTime))->take(4);
-        $nextWebinar = $liveWebinar ?: $upcomingWebinars->first();
-        $countdownWebinar = $upcomingWebinars->first();
+        $upcomingWebinars = $webinars->filter(fn (Webinar $webinar) => $webinar->scheduled_at->gte($currentTime));
+        $userUpcoming = $doctor?->country
+            ? $upcomingWebinars->first(fn (Webinar $w) => strcasecmp($w->country, $doctor->country) === 0)
+            : null;
+        $anyUpcoming = $upcomingWebinars->first();
+        $userWebinar = $doctor?->country
+            ? $webinars->first(fn ($w) => strcasecmp($w->country, $doctor->country) === 0)
+            : null;
+        $philippinesWebinar = $webinars->first(fn ($w) => strcasecmp($w->country, 'Philippines') === 0);
+
+        $countdownWebinar = $userUpcoming
+            ?: $anyUpcoming
+            ?: $userWebinar
+            ?: $philippinesWebinar
+            ?: $webinars->first();
+
         $featuredWebinar = $liveWebinar ?: $countdownWebinar;
+        $nextWebinar = $liveWebinar ?: $countdownWebinar;
         $certificateWebinar = $webinars
             ->filter(fn (Webinar $webinar) => filled($webinar->certificate_template_path))
             ->sortByDesc('scheduled_at')
