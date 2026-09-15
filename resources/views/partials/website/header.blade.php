@@ -1,7 +1,17 @@
 <header class="relative z-50 border-b border-slate-100 bg-white px-5 py-4 md:px-10">
     <div class="mx-auto grid max-w-7xl grid-cols-3 items-center">
         <a href="{{ route('home') }}" class="justify-self-start" aria-label="EASD home"><img src="{{ asset('assets/images/branding/easd-logo.png') }}" alt="European Association for the Study of Diabetes" class="h-10 w-auto object-contain sm:h-16"></a>
-        <a href="{{ route('home') }}" class="justify-self-center" aria-label="PULCE Connect 2026"><img src="{{ asset('assets/images/branding/pulce-logo.png') }}" alt="PULCE Connect 2026 Heart Failure Series" class="h-12 w-auto object-contain sm:h-20"></a>
+        <a href="{{ route('home') }}" class="justify-self-center text-center" aria-label="PULCE Connect 2026 Cardio-Renal-Metabolic Educational Series">
+            <span class="mx-auto block aspect-[4.05/1] w-36 overflow-hidden sm:w-64">
+                <img src="{{ asset('assets/images/branding/pulce-logo.png') }}" alt="PULCE Connect 2026" class="block h-auto w-full object-contain object-top">
+            </span>
+            <div class="mt-1 flex items-center justify-center gap-3 text-escRed" aria-label="Heart, Kidney and Metabolism">
+                <span class="inline-flex items-center gap-1 text-[8px] font-black uppercase sm:text-[10px]"><i class="ph-fill ph-heartbeat text-sm"></i>Heart</span>
+                <span class="inline-flex items-center gap-1 text-[8px] font-black uppercase sm:text-[10px]"><i class="ph-fill ph-drop text-sm"></i>Kidney</span>
+                <span class="inline-flex items-center gap-1 text-[8px] font-black uppercase sm:text-[10px]"><i class="ph-fill ph-activity text-sm"></i>Metabolism</span>
+            </div>
+            <p class="mt-1 hidden max-w-xl text-[9px] font-extrabold leading-4 text-escBlue sm:block"><span class="text-escRed">Cardio-Renal-Metabolic (CRM) Educational Series:</span> Redefining Diabetes Care Beyond Glycaemic Control</p>
+        </a>
         <div class="justify-self-end"><img src="{{ asset('assets/images/branding/hetero-logo.png') }}" alt="Hetero" class="h-10 w-auto object-contain sm:h-16"></div>
     </div>
 </header>

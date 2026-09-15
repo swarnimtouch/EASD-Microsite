@@ -7,7 +7,7 @@
             <div class="p-6 sm:p-10 md:p-12 space-y-8">
                 <div class="text-center space-y-2">
                     <span class="inline-block rounded bg-red-50 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-escRed">One-Time Registration</span>
-                    <h1 class="text-2xl sm:text-3xl font-black text-escBlue">Join the Heart Failure Series</h1>
+                    <h1 class="text-2xl sm:text-3xl font-black text-escBlue">Join the Cardio-Renal-Metabolic Educational Series</h1>
                     <p class="text-xs sm:text-sm text-slate-500 font-medium max-w-xl mx-auto">Please enter your professional credentials to register and access upcoming live scientific sessions, CME accredited modules, and materials.</p>
                 </div>
 

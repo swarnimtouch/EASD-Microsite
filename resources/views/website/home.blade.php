@@ -9,15 +9,20 @@
                     <div class="mb-5 flex items-center justify-center text-escBlue"><span class="flex h-16 w-16 items-center justify-center rounded-full bg-red-50 text-4xl text-escRed"><i class="ph ph-calendar-dots"></i></span></div>
                     <h2 class="text-center text-sm font-extrabold uppercase text-escBlue">Event Dates</h2>
                     <div class="mx-auto mt-3 h-0.5 w-12 bg-escRed"></div>
+                    <div class="mt-4 flex justify-center">@include('partials.website.timezone_switcher')</div>
                     <div class="mt-6 flex justify-center divide-x divide-slate-200">
                         @foreach($agendaCountries as $countryAgenda)
                             @php
                                 $eventDate = $countryAgenda['webinar']?->scheduled_at;
                             @endphp
-                            <div class="min-w-[85px] sm:min-w-[92px] px-3 sm:px-4 text-center">
-                                <strong class="block text-3xl font-black text-slate-950">{{ $eventDate?->format('d') ?? 'TBA' }}</strong>
-                                <span class="text-xs font-bold text-slate-700">{{ $eventDate?->format('F') ?? $countryAgenda['name'] }}<br>{{ $eventDate?->format('Y') ?? 'Schedule' }}</span>
-                            </div>
+                            @if($eventDate)
+                                <time class="min-w-[85px] px-3 text-center sm:min-w-[92px] sm:px-4" data-event-datetime="{{ $eventDate->toIso8601String() }}">
+                                    <strong data-date-part="day" class="block text-3xl font-black text-slate-950">{{ $eventDate->format('d') }}</strong>
+                                    <span class="text-xs font-bold text-slate-700"><span data-date-part="month">{{ $eventDate->format('F') }}</span><br><span data-date-part="year">{{ $eventDate->format('Y') }}</span></span>
+                                </time>
+                            @else
+                                <div class="min-w-[85px] px-3 text-center sm:min-w-[92px] sm:px-4"><strong class="block text-xl font-black text-slate-950">TBA</strong><span class="text-[10px] font-bold text-slate-600">{{ $countryAgenda['name'] }}<br>Schedule</span></div>
+                            @endif
                         @endforeach
                     </div>
                 </div>
@@ -32,7 +37,12 @@
             </div>
         </div>
         <div class="text-center lg:text-left">
-            <img src="{{ asset('assets/images/branding/pulce-logo.png') }}" alt="PULCE Connect 2026 Heart Failure Series" class="mx-auto w-full max-w-[620px] object-contain lg:mx-0">
+            <div class="mx-auto aspect-[4.05/1] w-full max-w-[620px] overflow-hidden lg:mx-0">
+                <img src="{{ asset('assets/images/branding/pulce-logo.png') }}" alt="PULCE Connect 2026" class="block h-auto w-full object-contain object-top">
+            </div>
+            <div class="mx-auto mt-2 max-w-[620px] rounded-sm bg-escRed px-4 py-2 text-center text-sm font-black uppercase tracking-wide text-white lg:mx-0">Cardio-Renal-Metabolic Educational Series</div>
+            <p class="mx-auto mt-2 max-w-[620px] text-center text-sm font-extrabold text-escBlue lg:mx-0">Redefining Diabetes Care Beyond Glycaemic Control</p>
+            <p class="mx-auto mt-3 max-w-2xl text-sm font-black leading-6 text-escBlue lg:mx-0">Live Hybrid Speaker Tour across 4 Host Countries (Malaysia, Philippines, Indonesia, Thailand) <span class="text-escRed">|</span> Broadcasting Live to Emerging Markets</p>
             @guest('web')
                 <div class="mt-7 flex flex-wrap items-center justify-center gap-4 lg:justify-start"><a href="{{ route('register') }}" class="rounded-md bg-escRed px-8 py-3 text-sm font-extrabold text-white shadow-lg hover:bg-red-700">REGISTER NOW</a><a href="{{ route('login') }}" class="text-xs font-extrabold text-escBlue underline underline-offset-4">Already registered? Login</a></div>
                 <p class="mt-3 text-center text-xs font-bold text-slate-500 lg:text-left"><i class="ph ph-users-three mr-1 text-escBlue"></i>{{ number_format($registeredDoctors) }} healthcare professional{{ $registeredDoctors === 1 ? '' : 's' }} registered</p>
@@ -45,7 +55,7 @@
 <section id="about" class="relative overflow-hidden px-6 py-14">
     <div class="mx-auto max-w-7xl">
         <h2 class="text-xl font-black uppercase text-escRed">About the Program</h2><div class="mt-2 h-0.5 w-16 bg-escRed"></div>
-        <h3 class="mt-5 text-lg font-extrabold text-escBlue">Reimagining Heart Failure Care Across Asia</h3>
+        <h3 class="mt-5 text-lg font-extrabold text-escBlue">Redefining Diabetes Care Beyond Glycaemic Control</h3>
         <p class="mt-2 max-w-4xl text-sm leading-6 text-slate-700">PULCE Connect brings leading cardiology experts together to translate guideline-directed medical therapy (GDMT) into everyday clinical practice. The programme explores optimal sequencing of SGLT2 inhibitors and ARNI therapy, emphasizing early intervention across the cardio-renal-metabolic continuum.</p>
         <div class="mt-8">
         <div class="mt-10" id="faculty">

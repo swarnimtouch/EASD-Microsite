@@ -1,13 +1,8 @@
 @php
     $agendaItems = [
-        ['ph-podium', 'Welcome & Opening Remarks'],
-        ['ph-target', 'Keynote Session'],
-        ['ph-users-three', 'Expert Session'],
-        ['ph-stethoscope', 'NCL Session'],
-        ['ph-users', 'Panel Discussion'],
-        ['ph-chat-centered-text', 'Live Q&A'],
-        ['ph-globe-hemisphere-east', 'Webinar Q&A'],
-        ['ph-certificate', 'Closing Remarks & Certification'],
+        ['ph-podium', 'Opening & Keynote'],
+        ['ph-users-three', 'Expert Sessions & Panel'],
+        ['ph-chat-centered-text', 'Live Q&A & Certification'],
     ];
 @endphp
 
@@ -16,7 +11,7 @@
         <div>
             <h2 class="text-xl font-black uppercase text-escRed">Scientific Agenda</h2>
             <div class="mt-2 h-0.5 w-16 bg-escRed"></div>
-            <p class="mt-3 text-sm text-slate-600">Detailed program agenda for each country.</p>
+            <p class="mt-3 text-sm text-slate-600">A simplified three-step scientific journey across four host countries.</p>
         </div>
 
         <div class="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -52,7 +47,7 @@
                             <h4 class="line-clamp-2 text-xs font-black leading-5 text-slate-900">{{ $webinar->title }}</h4>
                             <div class="mt-2 space-y-1 text-[10px] font-semibold text-slate-600">
                                 <p><i class="ph ph-stethoscope mr-1 {{ $accentText }}"></i>{{ $webinar->speciality?->name ?? 'Speciality to be announced' }}</p>
-                                <p><i class="ph ph-calendar-blank mr-1 {{ $accentText }}"></i>{{ $webinar->scheduled_at?->format('d M Y, h:i A') ?? 'Schedule to be announced' }}</p>
+                                <p data-event-datetime="{{ $webinar->scheduled_at?->toIso8601String() }}"><i class="ph ph-calendar-blank mr-1 {{ $accentText }}"></i><span data-date-part="datetime">{{ $webinar->scheduled_at?->format('d M Y, h:i A') ?? 'Schedule to be announced' }}</span></p>
                                 <p><i class="ph ph-users-three mr-1 {{ $accentText }}"></i>{{ $speakerCount }} speaker{{ $speakerCount === 1 ? '' : 's' }} · {{ $moderatorCount }} moderator{{ $moderatorCount === 1 ? '' : 's' }}</p>
                             </div>
                         @else
@@ -62,13 +57,13 @@
                         @endif
                     </div>
 
-                    <div class="mt-4 grid grid-cols-4 gap-x-1.5 gap-y-5">
+                    <div class="mt-4 grid grid-cols-3 gap-2">
                         @foreach($agendaItems as [$icon, $label])
                             <div class="flex flex-col items-center text-center">
                                 <span class="flex h-9 w-9 items-center justify-center rounded-full border {{ $accentBorder }} {{ $accentBg }} text-lg {{ $accentText }}">
                                     <i class="ph {{ $icon }}"></i>
                                 </span>
-                                <span class="mt-1.5 text-[8px] font-bold leading-[1.25] text-slate-700">{{ $label }}</span>
+                                <span class="mt-1.5 text-[9px] font-bold leading-[1.3] text-slate-700">{{ $label }}</span>
                             </div>
                         @endforeach
                     </div>

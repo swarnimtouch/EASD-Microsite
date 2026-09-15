@@ -352,7 +352,7 @@ class CertificatePdf
             '/F1 18 Tf',
             '1 1 1 rg',
             '40 805 Td',
-            '(PULCE Connect 2026 | Heart Failure Series) Tj',
+            '(PULCE Connect 2026 | Cardio-Renal-Metabolic Educational Series) Tj',
             '/F1 10 Tf',
             '0 -18 Td',
             '(European Society of Cardiology - Southeast Asia Scientific Session) Tj',

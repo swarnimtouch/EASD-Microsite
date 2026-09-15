@@ -5,7 +5,10 @@
     <div class="relative z-10 mx-auto max-w-[1440px]">
         <div class="mb-5 flex items-center justify-between gap-4">
             <div><p class="text-xs font-semibold text-slate-500">Welcome, <strong class="text-escBlue">{{ $doctor->name }}</strong></p></div>
-            <a href="{{ route('logout') }}" class="inline-flex items-center gap-2 rounded-lg border border-escRed px-4 py-2 text-xs font-extrabold text-escRed transition hover:bg-escRed hover:text-white"><i class="ph ph-sign-out"></i>Logout</a>
+            <div class="flex flex-wrap items-center justify-end gap-2">
+                @include('partials.website.timezone_switcher')
+                <a href="{{ route('logout') }}" class="inline-flex items-center gap-2 rounded-lg border border-escRed px-4 py-2 text-xs font-extrabold text-escRed transition hover:bg-escRed hover:text-white"><i class="ph ph-sign-out"></i>Logout</a>
+            </div>
         </div>
 
         @if(session('success') || session('comment_success'))
@@ -125,9 +128,10 @@
                         @endforeach
                     </div>
                     <div class="mt-5 grid grid-cols-2 divide-x border-t border-slate-200 pt-4 text-sm font-bold">
-                        <div class="flex items-center justify-center gap-3 text-escRed"><i class="ph ph-calendar-blank text-2xl"></i>{{ $countdownWebinar?->scheduled_at?->format('d F Y') ?? 'Date TBA' }}</div>
-                        <div class="flex items-center justify-center gap-3 text-slate-800"><i class="ph ph-map-pin text-2xl text-escRed"></i>{{ $countdownWebinar?->timezone_label ?? 'Location TBA' }}</div>
+                        <div @if($countdownWebinar?->scheduled_at) data-event-datetime="{{ $countdownWebinar->scheduled_at->toIso8601String() }}" @endif class="flex items-center justify-center gap-3 text-escRed"><i class="ph ph-calendar-blank text-2xl"></i><span data-date-part="datetime">{{ $countdownWebinar?->scheduled_at?->format('d F Y, h:i A') ?? 'Date TBA' }}</span></div>
+                        <div class="flex items-center justify-center gap-3 text-slate-800"><i class="ph ph-globe text-2xl text-escRed"></i><span data-selected-timezone-label>GMT+8 SGT/PHT</span></div>
                     </div>
+                    @if($countdownWebinar?->timezone_label)<p class="mt-3 text-center text-[10px] font-semibold text-slate-400">Host timezone: {{ $countdownWebinar->timezone_label }}</p>@endif
                 </section>
 
                 <section>

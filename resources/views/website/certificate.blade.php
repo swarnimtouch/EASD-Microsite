@@ -149,7 +149,7 @@
                             <p class="mt-3 font-serif text-2xl italic tracking-wide text-escBlue sm:text-3xl">{{ $doctor->name }}</p>
 
                             <p class="mt-6 text-xs font-medium text-slate-500">has participated in</p>
-                            <p class="mt-2 text-base font-black text-escRed sm:text-lg">PULCE Connect 2026 | Heart Failure Series</p>
+                            <p class="mt-2 text-base font-black text-escRed sm:text-lg">PULCE Connect 2026 | Cardio-Renal-Metabolic Educational Series</p>
 
                             <p class="mt-6 text-xs font-bold text-slate-700">{{ $webinar->title }}</p>
                             @if($webinar->scheduled_at)

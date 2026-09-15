@@ -55,6 +55,49 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
 <script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>
 @vite('resources/js/app.js')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const switchers = document.querySelectorAll('[data-timezone-switcher]');
+    if (!switchers.length) return;
+
+    const savedTimezone = sessionStorage.getItem('pulce-timezone') || 'Asia/Singapore';
+    const timezoneLabels = {
+        'Asia/Bangkok': 'GMT+7 ICT',
+        'Asia/Singapore': 'GMT+8 SGT/PHT',
+        'Asia/Kolkata': 'GMT+5:30 IST',
+        'Asia/Dubai': 'GMT+4 GST',
+    };
+    const valueFor = (date, timezone, options) => new Intl.DateTimeFormat('en-GB', {timeZone: timezone, ...options}).format(date);
+    const renderTimes = timezone => {
+        document.querySelectorAll('[data-event-datetime]').forEach(element => {
+            const date = new Date(element.dataset.eventDatetime);
+            if (Number.isNaN(date.getTime())) return;
+            element.querySelectorAll('[data-date-part]').forEach(part => {
+                const type = part.dataset.datePart;
+                const formats = {
+                    day: {day: '2-digit'},
+                    month: {month: 'long'},
+                    year: {year: 'numeric'},
+                    date: {day: '2-digit', month: 'long', year: 'numeric'},
+                    datetime: {day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'},
+                    time: {hour: '2-digit', minute: '2-digit'},
+                };
+                part.textContent = valueFor(date, timezone, formats[type] || formats.datetime);
+            });
+        });
+        document.querySelectorAll('[data-selected-timezone-label]').forEach(element => {
+            element.textContent = timezoneLabels[timezone] || timezone;
+        });
+        switchers.forEach(select => select.value = timezone);
+    };
+
+    switchers.forEach(select => select.addEventListener('change', event => {
+        sessionStorage.setItem('pulce-timezone', event.target.value);
+        renderTimes(event.target.value);
+    }));
+    renderTimes(savedTimezone);
+});
+</script>
 @stack('scripts')
 </body>
 </html>

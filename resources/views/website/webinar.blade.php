@@ -94,15 +94,14 @@
                 <h1 class="mt-4 text-2xl font-black text-slate-900 md:text-3xl">{{ $webinar->title }}</h1>
                 <div class="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-xs font-semibold text-slate-500">
                     @if($webinar->scheduled_at)
-                        <span class="flex items-center gap-2"><i class="ph ph-calendar-blank text-lg text-escRed"></i>{{ $webinar->scheduled_at->format('d F Y, h:i A') }}</span>
+                        <span data-event-datetime="{{ $webinar->scheduled_at->toIso8601String() }}" class="flex items-center gap-2"><i class="ph ph-calendar-blank text-lg text-escRed"></i><span data-date-part="datetime">{{ $webinar->scheduled_at->format('d F Y, h:i A') }}</span></span>
                     @endif
-                    @if($webinar->timezone_label)
-                        <span class="flex items-center gap-2"><i class="ph ph-globe text-lg text-escRed"></i>{{ $webinar->timezone_label }}</span>
-                    @endif
+                    <span class="flex items-center gap-2"><i class="ph ph-globe text-lg text-escRed"></i><span data-selected-timezone-label>GMT+8 SGT/PHT</span>@if($webinar->timezone_label)<span class="text-slate-400">· Host: {{ $webinar->timezone_label }}</span>@endif</span>
                     @if($webinar->duration_minutes)
                         <span class="flex items-center gap-2"><i class="ph ph-clock text-lg text-escRed"></i>{{ $webinar->duration_minutes }} minutes</span>
                     @endif
                 </div>
+                <div class="mt-4">@include('partials.website.timezone_switcher')</div>
             </section>
 
             @if($playbackUrl)
@@ -385,14 +384,12 @@
                     </div>
                     <div class="h-px bg-slate-100"></div>
                     <div class="flex items-center justify-between text-xs font-bold text-slate-600 px-2">
-                        <div class="flex items-center gap-2"><i
-                                class="ph ph-calendar text-escRed"></i> {{ $webinar->scheduled_at?->format('d F Y') ?: 'Available now' }}
+                        <div data-event-datetime="{{ $webinar->scheduled_at?->toIso8601String() }}" class="flex items-center gap-2"><i
+                                class="ph ph-calendar text-escRed"></i> <span data-date-part="datetime">{{ $webinar->scheduled_at?->format('d F Y, h:i A') ?: 'Available now' }}</span>
                         </div>
-                        @if($webinar->timezone_label)
-                            <div class="flex items-center gap-2">
-                                <i class="ph ph-globe text-escRed"></i> {{ $webinar->timezone_label }}
-                            </div>
-                        @endif
+                        <div class="flex items-center gap-2">
+                            <i class="ph ph-globe text-escRed"></i> <span data-selected-timezone-label>GMT+8 SGT/PHT</span>
+                        </div>
                     </div>
                 </div>
             </div>

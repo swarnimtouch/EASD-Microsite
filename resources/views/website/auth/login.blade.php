@@ -20,9 +20,9 @@
                 <div class="absolute -bottom-28 -left-20 h-80 w-80 rounded-full bg-escRed/20"></div>
                 <div class="relative"><span
                         class="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-[10px] font-extrabold uppercase tracking-[.2em]"><i
-                            class="ph-fill ph-heartbeat"></i> Heart Failure Series</span>
-                    <h1 class="mt-8 text-4xl font-black leading-tight">Connecting Heart Failure Expertise Across
-                        Asia</h1>
+                            class="ph-fill ph-heartbeat"></i> Cardio-Renal-Metabolic Series</span>
+                    <h1 class="mt-8 text-4xl font-black leading-tight">Redefining Diabetes Care Beyond Glycaemic
+                        Control</h1>
                     <p class="mt-5 max-w-sm text-sm leading-7 text-white/70">Access your webinars, scientific resources,
                         expert faculty, and upcoming EASD sessions from one dashboard.</p></div>
                 <div class="relative flex items-center gap-3 text-sm font-bold"><i
